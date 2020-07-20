@@ -1,5 +1,12 @@
 const fetch = require('node-fetch');
 
+function checkStatus(res) {
+  if (res.ok) { // res.status >= 200 && res.status < 300
+    return res;
+  }
+  throw new Error(res);
+}
+
 function fetchJson(url, params, headers, method = 'GET') {
   let body;
   let queryUrl = url;
@@ -30,6 +37,7 @@ function fetchJson(url, params, headers, method = 'GET') {
     },
     body,
   })
+    .then(checkStatus)
     .then((res) => res.json())
     .catch((e) => e);
 }
