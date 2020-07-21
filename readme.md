@@ -25,11 +25,16 @@ sms.sendSMS(options)
   .catch(console.log);
 ```
 
+See detailed API information at <https://www.apifonica.com/en/docs/api/rest/send-message/>
+
 ##### Get message details
 
 ```javascript
-// the getSMS method also returns a promise. It expects the SID of the message you're trying to look up
+// the getSMS method also returns a promise. 
+// It expects the SID of the message you're trying to look up
 sms.getSMS(message_sid)
   .then(console.log)
   .catch(console.log);
 ```
+
+See detailed API information at <https://www.apifonica.com/en/docs/api/rest/get-message-info/>
