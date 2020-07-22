@@ -1,11 +1,12 @@
 {
   "name": "@apifonica/sms-sdk",
-  "version": "1.0.4",
+  "version": "2.0.6",
   "description": "Apifonica SDK for sending SMS messages",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel src -d lib"
+    "build": "babel src -d lib",
+    "deploy": "npm run build && npm publish"
   },
   "author": "Apifonica",
   "license": "UNLICENSED",
@@ -13,12 +14,14 @@
     "access": "public"
   },
   "dependencies": {
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.0",
+    "uuid": "^8.2.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0",
     "@babel/core": "^7.0.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.10.4",
+    "@babel/plugin-transform-runtime": "^7.10.5",
     "@babel/preset-env": "^7.10.4",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.4.0",
@@ -35,7 +38,8 @@
       ]
     ],
     "plugins": [
-      "@babel/plugin-proposal-object-rest-spread"
+      "@babel/plugin-proposal-object-rest-spread",
+      "@babel/plugin-transform-runtime"
     ]
   },
   "files": [

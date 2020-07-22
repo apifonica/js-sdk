@@ -15,20 +15,17 @@ class SMS {
     this.authString = `Basic ${authbtoa}`;
   }
 
-  // eslint-disable-next-line object-curly-newline, camelcase
-  sendSMS = (options) => {
+  sendSMS = ({ from, to, text, ...options }) => {
     if (!this.authString) {
-      throw new Error('SMS API not initialized');
+      throw new Error('Please provide your account information first');
     }
-    // eslint-disable-next-line object-curly-newline
-    return sendSMS({ accountSID: this.accountSID, authString: this.authString, ...options });
+    return sendSMS({ accountSID: this.accountSID, authString: this.authString, from, to, text, ...options });
   }
 
   getSMS = (messageSID) => {
     if (!this.authString) {
-      throw new Error('SMS API not initialized');
+      throw new Error('Please provide your account information first');
     }
-    // eslint-disable-next-line object-curly-newline
     return getSMS({ accountSID: this.accountSID, authString: this.authString, messageSID });
   }
 }

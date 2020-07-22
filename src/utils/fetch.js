@@ -1,15 +1,43 @@
-const fetch = require('node-fetch');
+import { v4 as uuid } from 'uuid';
+import fetch from 'node-fetch';
+import { version } from '../../package.json';
 
 function checkStatus(res) {
   if (res.ok) { // res.status >= 200 && res.status < 300
     return res;
   }
-  throw new Error(res);
+  if (res.status === 401 || res.status === 403) {
+    throw new Error({
+      status: res.status,
+      message: 'Unauthorized',
+      error: res,
+    });
+  }
+  if (res.status >= 400 && res.status < 500) {
+    throw new Error({
+      status: res.status,
+      message: 'Bad Request',
+      error: res,
+    });
+  }
+  if (res.status >= 500) {
+    throw new Error({
+      status: res.status,
+      message: 'Server Error',
+      error: res,
+    });
+  }
+  throw new Error({
+    status: res.status,
+    message: 'Error',
+    error: res,
+  });
 }
 
 function fetchJson(url, params, headers, method = 'GET') {
   let body;
-  let queryUrl = url;
+  const initialUrl = `https://api.apifonica.com/v2/accounts/${url}`;
+  let queryUrl = initialUrl;
   switch (method) {
     case 'POST':
     case 'PUT':
@@ -26,13 +54,16 @@ function fetchJson(url, params, headers, method = 'GET') {
         ? Object.keys(params)
           .map((key) => `${key}=${params[key]}`).join('&')
         : '';
-      queryUrl = query ? `${url}?${query}` : url;
+      queryUrl = query ? `${initialUrl}?${query}` : initialUrl;
       break;
   }
 
   return fetch(queryUrl, {
     method,
     headers: {
+      'Content-Type': 'application/json',
+      'X-SDK-Version': version,
+      'X-Request-ID': uuid(),
       ...headers,
     },
     body,
@@ -42,4 +73,4 @@ function fetchJson(url, params, headers, method = 'GET') {
     .catch((e) => e);
 }
 
-module.exports = { fetch: fetchJson };
+module.exports = { fetchJson };
