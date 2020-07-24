@@ -1,3 +1,3 @@
-const SMS = require('./lib/SMS/index.js');
+const Apifonica = require('./lib/apifonica/index.js');
 
-module.exports = SMS;
+module.exports = Apifonica;

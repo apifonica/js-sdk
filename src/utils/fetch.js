@@ -2,36 +2,24 @@ import { v4 as uuid } from 'uuid';
 import fetch from 'node-fetch';
 import { version } from '../../package.json';
 
-function checkStatus(res) {
+async function checkStatus(res) {
   if (res.ok) { // res.status >= 200 && res.status < 300
     return res;
   }
+  let error;
   if (res.status === 401 || res.status === 403) {
-    throw new Error({
-      status: res.status,
-      message: 'Unauthorized',
-      error: res,
-    });
+    error = new Error('Unauthorized');
+  } else if (res.status >= 400 && res.status < 500) {
+    error = new Error('Bad request');
+  } else if (res.status >= 500) {
+    error = new Error('Server error');
+  } else {
+    error = new Error('Error');
   }
-  if (res.status >= 400 && res.status < 500) {
-    throw new Error({
-      status: res.status,
-      message: 'Bad Request',
-      error: res,
-    });
-  }
-  if (res.status >= 500) {
-    throw new Error({
-      status: res.status,
-      message: 'Server Error',
-      error: res,
-    });
-  }
-  throw new Error({
-    status: res.status,
-    message: 'Error',
-    error: res,
-  });
+  error.status = res.status;
+  const json = await res.json();
+  error.error = json;
+  throw error;
 }
 
 function fetchJson(url, params, headers, method = 'GET') {

@@ -2,9 +2,6 @@ const { fetchJson } = require('../utils/fetch');
 
 // eslint-disable-next-line no-unused-vars, object-curly-newline
 async function sendSMS({ accountSID, authString, from, to, text, ...options }) {
-  if (!from || !to || !text) {
-    throw new Error('Required parameters not present. Please provide at least the "from", "to", and "text" parameters');
-  }
   try {
     const result = await fetchJson(
       `${accountSID}/messages`,
@@ -22,13 +19,15 @@ async function sendSMS({ accountSID, authString, from, to, text, ...options }) {
         message_sid: msg,
       };
     }
-    throw new Error({ messageText: 'Could not send SMS', result });
+    const error = new Error('Could not send message');
+    error.error = result;
+    throw error;
   } catch (err) {
     return err;
   }
 }
 
-async function getSMS({ authString, accountSID, messageSID }) {
+async function getSMS(accountSID, authString, messageSID) {
   if (!messageSID) {
     throw new Error('Provide a message SID');
   }

@@ -1,40 +1,51 @@
-### Example usage:
-
-##### Send message
+#### Installation 
 
 ```javascript
-const SMS = require('@apifonica/sms-sdk');
+npm install @apifonica/js-sdk
+```
+
+#### Initialization
+
+```javascript
+const Apifonica = require('@apifonica/js-sdk');
 
 // initialize with your account credentials
-const sms = new SMS({
-  accountSID: ACCOUNT SID,
-  authToken: AUTHORIZATION TOKEN,
-});
+const apifonica = new Apifonica(account_sid, auth_token);
+```
 
-// the three required options are "from", "to", and "text"
-// other options are "msg_app_sid", "channel", "type", "url", "tag"
-const options = {
-  from: NUMBER TO SEND FROM,
-  to: RECIPIENT NUMBER,
-  text: MESSAGE TEXT,
-};
+#### Send a message
+```javascript
+const message = apifonica.newSMS(from, to, text);
+// or
+const message = apifonica.newTelegramMessage(from, to, text);
+// or
+const message = apifonica.newFacebookMessage(from, to, text);
 
-// the sendSMS method returns a promise
-sms.sendSMS(options)
-  .then(console.log)
-  .catch(console.log);
+message.send();  // returns a promise
+```
+
+#### Set optional parameters before sending
+
+```javascript
+  // set message app sid (Existing application SID which is used for Message operations)
+  message.setMessageAppSID(messageAppSID);
+
+  // set tag (Custom optional string field; can be used for custom client message filtering)
+  message.setTag(tag);
+
+  // set type (Type of content for Telegram/Facebook. Can be one of the following: image, gif, text, documentms, telegram, facebook)
+  message.setType(type);
+
+  // set url (URL where media content should be uploaded from)
+  message.setMediaURL(url);
 ```
 
 See detailed API information at <https://www.apifonica.com/en/docs/api/rest/send-message/>
 
-##### Get message details
+#### Get message details
 
 ```javascript
-// the getSMS method also returns a promise. 
-// It expects the SID of the message you're trying to look up
-sms.getSMS(message_sid)
-  .then(console.log)
-  .catch(console.log);
+message.checkStatus(); // returns a promise
 ```
 
 See detailed API information at <https://www.apifonica.com/en/docs/api/rest/get-message-info/>
